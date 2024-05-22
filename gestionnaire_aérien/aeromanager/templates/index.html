@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Index</h1>
+
+    <div class="box">
+        <h2>Aeroports</h2>
+        {% for aeroport in aeroports %}
+            <p><a href="{% url 'aeroport_detail' aeroport.id %}">{{ aeroport.nom }}</a></p>
+        {% endfor %}
+    </div>
+
+    <div class="box">
+        <h2>Avions</h2>
+        {% for avion in avions %}
+            <p><a href="{% url 'avion_detail' avion.id %}">{{ avion.nom }}</a></p>
+        {% endfor %}
+    </div>
+
+    <div class="box">
+        <h2>Compagnies</h2>
+        {% for compagnie in compagnies %}
+            <p><a href="{% url 'compagnie_detail' compagnie.id %}">{{ compagnie.nom }}</a></p>
+        {% endfor %}
+    </div>
+
+    <div class="box">
+        <h2>Pistes</h2>
+        {% for piste in pistes %}
+            <p><a href="{% url 'piste_detail' piste.id %}">{{ piste.numero }}</a></p>
+        {% endfor %}
+    </div>
+
+    <div class="box">
+        <h2>Types Avions</h2>
+        {% for type_avion in types_avions %}
+            <p><a href="{% url 'type_avion_detail' type_avion.id %}">{{ type_avion.modele }}</a></p>
+        {% endfor %}
+    </div>
+
+    <div class="box">
+        <h2>Vols</h2>
+        {% for vol in vols %}
+            <p><a href="{% url 'vol_detail' vol.id %}">{{ vol.pilote }}</a></p>
+        {% endfor %}
+    </div>
+{% endblock %}
