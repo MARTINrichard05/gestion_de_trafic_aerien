@@ -32,7 +32,7 @@ def aeroport_detail(request, id):
 
 def avion_detail(request, id):
     avion = get_object_or_404(Avions, id=id)
-    type_avion = get_object_or_404(TypesAvions, id=avion.type_avion.id)
+    type_avion = get_object_or_404(TypesAvions, id=avion.modele.id)
     context = {
         'avion': avion,
         'type_avion': type_avion,
