@@ -26,6 +26,9 @@ class Avions(models.Model):
         managed = False
         db_table = 'avions'
 
+    def __str__(self):
+        return f"{self.marque} {self.modele}"
+
 
 class Compagnies(models.Model):
     nom = models.CharField(max_length=255)
@@ -35,6 +38,9 @@ class Compagnies(models.Model):
     class Meta:
         managed = False
         db_table = 'compagnies'
+
+    def __str__(self):
+        return self.nom
 
 
 class Pistes(models.Model):
@@ -57,6 +63,9 @@ class TypesAvions(models.Model):
     class Meta:
         managed = False
         db_table = 'types_avions'
+
+    def __str__(self):
+        return self.marque + " " + self.modele
 
 
 class Vols(models.Model):
