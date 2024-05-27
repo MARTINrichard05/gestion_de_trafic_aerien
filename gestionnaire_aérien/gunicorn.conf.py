@@ -1,6 +1,6 @@
 command = '/usr/bin/gunicorn'
 pythonpath = '.'
-bind = 'unix:/home/kali/gestionnaire_aérien/gestionnaire_aérien.sock'
+bind = "127.0.0.1:8000"
 workers = 3
 user = 'kali'
 limit_request_fields = 32000

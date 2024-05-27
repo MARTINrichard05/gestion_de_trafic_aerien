@@ -51,7 +51,7 @@ class TypesAvions(models.Model):
     marque = models.CharField(max_length=255)
     modele = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True, upload_to='type_avion_images/')
     longueur_piste_necessaire = models.IntegerField()
 
     class Meta:
