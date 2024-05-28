@@ -5,6 +5,6 @@
     <p>Description: {{ type_avion.description }}</p>
     <p>Longueur de piste nécessaire: {{ type_avion.longueur_piste_necessaire }}</p>
     {% if type_avion.image %}
-        <img src="{{ type_avion.image.url }}" alt="{{ type_avion.marque }} {{ type_avion.modele }}">
+        <img class="rounded-image" src="{{ type_avion.image.url }}" alt="{{ type_avion.marque }} {{ type_avion.modele }}">
     {% endif %}
 {% endblock %}

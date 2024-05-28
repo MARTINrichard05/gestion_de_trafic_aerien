@@ -62,7 +62,7 @@
         <h2>Vols <a href="{% url 'add_vol' %}"><button>Add</button></a></h2>
         {% for vol in vols %}
             <p>
-                <a href="{% url 'vol_detail' vol.id %}">{{ vol.pilote }}</a>
+                <a href="{% url 'vol_detail' vol.id %}">{{ vol }}</a>
                 <a href="{% url 'edit_vol' vol.id %}"><button>Edit</button></a>
                 <a href="{% url 'delete_vol' vol.id %}"><button>Delete</button></a>
             </p>

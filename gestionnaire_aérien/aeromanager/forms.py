@@ -9,7 +9,11 @@ class AeroportsForm(forms.ModelForm):
 class VolsForm(forms.ModelForm):
     class Meta:
         model = Vols
-        fields = ['avion', 'pilote', 'aeroport_depart', 'date_heure_depart', 'aeroport_arrivee']
+        fields = ['avion', 'pilote', 'aeroport_depart', 'date_heure_depart', 'aeroport_arrivee', 'date_heure_arrivee']
+        widgets = {
+            'date_heure_depart': forms.DateTimeInput(attrs={'placeholder': 'YYYY-MM-DD HH:MM:SS'}),
+            'date_heure_arrivee': forms.DateTimeInput(attrs={'placeholder': 'YYYY-MM-DD HH:MM:SS'}),
+        }
 
 class AvionsForm(forms.ModelForm):
     class Meta:

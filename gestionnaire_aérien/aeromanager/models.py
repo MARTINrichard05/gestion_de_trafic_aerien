@@ -16,6 +16,9 @@ class Aeroports(models.Model):
         managed = False
         db_table = 'aeroports'
 
+    def __str__(self):
+        return self.nom + " (" + self.pays + ")"
+
 
 class Avions(models.Model):
     nom = models.CharField(max_length=255)
@@ -27,7 +30,7 @@ class Avions(models.Model):
         db_table = 'avions'
 
     def __str__(self):
-        return f"{self.marque} {self.modele}"
+        return str(self.modele)+" "+str(self.nom)
 
 
 class Compagnies(models.Model):
@@ -52,6 +55,9 @@ class Pistes(models.Model):
         managed = False
         db_table = 'pistes'
 
+    def __str__(self):
+        return str(self.aeroport) + " - Piste " + str(self.numero)
+
 
 class TypesAvions(models.Model):
     marque = models.CharField(max_length=255)
@@ -65,7 +71,7 @@ class TypesAvions(models.Model):
         db_table = 'types_avions'
 
     def __str__(self):
-        return self.marque + " " + self.modele
+        return str(self.marque) + " " + self.modele
 
 
 class Vols(models.Model):
@@ -79,3 +85,6 @@ class Vols(models.Model):
     class Meta:
         managed = False
         db_table = 'vols'
+
+    def __str__(self):
+        return str(self.avion) + " - " + str(self.aeroport_depart) + " -> " + str(self.aeroport_arrivee)

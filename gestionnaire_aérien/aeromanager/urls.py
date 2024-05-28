@@ -11,6 +11,7 @@ urlpatterns = [
     path("compagnie_detail/<int:id>", views.compagnie_detail, name="compagnie_detail"),
     path("piste_detail/<int:id>", views.piste_detail, name="piste_detail"),
     path("type_avion/<int:id>", views.type_avion_detail, name="type_avion_detail"),
+    path("vol_detail/<int:id>", views.vol_detail, name="vol_detail"),
 
     path('add_aeroport/', views.add_aeroport, name='add_aeroport'),
     path('add_avion/', views.add_avion, name='add_avion'),

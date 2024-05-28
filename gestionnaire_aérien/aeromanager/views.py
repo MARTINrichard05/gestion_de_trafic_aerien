@@ -60,6 +60,10 @@ def type_avion_detail(request, id):
     }
     return render(request, 'type_avion_detail.html', context)
 
+def vol_detail(request, id):
+    vol = get_object_or_404(Vols, id=id)
+    return render(request, 'detail_vol.html', {'vol': vol})
+
 def add_aeroport(request):
     if request.method == 'POST':
         form = AeroportsForm(request.POST)
