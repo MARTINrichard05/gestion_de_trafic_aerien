@@ -19,6 +19,18 @@ class Aeroports(models.Model):
     def __str__(self):
         return self.nom + " (" + self.pays + ")"
 
+    def abreviation(self):
+        mots = self.str(self.nom).split(" ")
+        abrev = ""
+        for mot in mots:
+            abrev += mot[0]
+
+        return abrev.lower()
+
+    def mots_cles(self):
+        mots = self.str(self.nom).lower().split(" ")
+        return mots
+
 
 class Avions(models.Model):
     nom = models.CharField(max_length=255)
@@ -52,7 +64,7 @@ class Pistes(models.Model):
     longueur = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'pistes'
 
     def __str__(self):
@@ -81,10 +93,12 @@ class Vols(models.Model):
     date_heure_depart = models.DateTimeField()
     aeroport_arrivee = models.ForeignKey(Aeroports, models.DO_NOTHING, related_name='vols_aeroport_arrivee_set')
     date_heure_arrivee = models.DateTimeField()
+    piste_depart = models.IntegerField(blank=True, null=True)
+    piste_arrivee = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'vols'
 
     def __str__(self):
-        return str(self.avion) + " - " + str(self.aeroport_depart) + " -> " + str(self.aeroport_arrivee)
+        return str(self.avion) + " - " + str(self.aeroport_depart) + " ("+str(self.piste_depart)+") -> " + str(self.aeroport_arrivee)+ " ("+str(self.piste_arrivee)+")"

@@ -1,8 +1,21 @@
 from django.shortcuts import render ,get_object_or_404, redirect
 from .models import Aeroports, Avions, Compagnies, Pistes, TypesAvions, Vols
 from .forms import AeroportsForm, AvionsForm, CompagniesForm, PistesForm, TypesAvionsForm, VolsForm
+from .forms import UploadCSVForm
+import time
+import datetime
+from .matcher import find_best_match, findairports
+from .flightarranger import arrange
+import csv
+from django.http import HttpResponse
 
 
+
+
+
+
+def coordinerpiste_vols(pistes, vols):
+    pass
 
 def index(request):
     aeroports = Aeroports.objects.all()
@@ -11,6 +24,8 @@ def index(request):
     pistes = Pistes.objects.all()
     types_avions = TypesAvions.objects.all()
     vols = Vols.objects.all()
+
+
 
     context = {
         'aeroports': aeroports,
@@ -99,6 +114,7 @@ def add_piste(request):
         form = PistesForm(request.POST)
         if form.is_valid():
             piste = form.save()
+            arrange()
             return redirect('piste_detail', id=piste.id)
     else:
         form = PistesForm()
@@ -109,6 +125,7 @@ def add_type_avion(request):
         form = TypesAvionsForm(request.POST)
         if form.is_valid():
             type_avion = form.save()
+            arrange()
             return redirect('type_avion_detail', id=type_avion.id)
     else:
         form = TypesAvionsForm()
@@ -119,6 +136,7 @@ def add_vol(request):
         form = VolsForm(request.POST)
         if form.is_valid():
             vol = form.save()
+            arrange()
             return redirect('vol_detail', id=vol.id)
     else:
         form = VolsForm()
@@ -163,6 +181,7 @@ def edit_piste(request, id):
         form = PistesForm(request.POST, instance=piste)
         if form.is_valid():
             piste = form.save()
+            arrange()
             return redirect('piste_detail', id=piste.id)
     else:
         form = PistesForm(instance=piste)
@@ -174,6 +193,7 @@ def edit_type_avion(request, id):
         form = TypesAvionsForm(request.POST, request.FILES, instance=type_avion)
         if form.is_valid():
             type_avion = form.save()
+            arrange()
             return redirect('type_avion_detail', id=type_avion.id)
     else:
         form = TypesAvionsForm(instance=type_avion)
@@ -185,6 +205,7 @@ def edit_vol(request, id):
         form = VolsForm(request.POST, instance=vol)
         if form.is_valid():
             vol = form.save()
+            arrange()
             return redirect('vol_detail', id=vol.id)
     else:
         form = VolsForm(instance=vol)
@@ -208,14 +229,73 @@ def delete_compagnie(request, id):
 def delete_piste(request, id):
     piste = Pistes.objects.get(id=id)
     piste.delete()
+    arrange()
     return redirect('index')
 
 def delete_type_avion(request, id):
     type_avion = TypesAvions.objects.get(id=id)
     type_avion.delete()
+    arrange()
     return redirect('index')
 
 def delete_vol(request, id):
     vol = Vols.objects.get(id=id)
     vol.delete()
+    arrange()
     return redirect('index')
+
+def upload_csv(request):
+    if request.method == 'POST':
+        form = UploadCSVForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['csv_file']
+            decoded_file = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.reader(decoded_file)
+            next(reader)  # Skip the header row
+            for row in reader:
+                # Extraire les données du vol
+                compagnie_default, _ = Compagnies.objects.get_or_create(nom="Default")
+                modele_default, _ = TypesAvions.objects.get_or_create(marque="Default", modele="Default")
+                avion, created = Avions.objects.get_or_create(
+                    nom=row[0],
+                    defaults={'compagnie': compagnie_default, 'modele': modele_default}
+                )
+                pilote = row[1]
+                aeroport_depart = row[2]
+                date_heure_depart = row[3]
+                aeroport_arrivee = row[4]
+                date_heure_arrivee = row[5]
+
+
+
+                aeroportsdispo = Aeroports.objects.all()
+                aeroportsdisponames= []
+                for aeroport in aeroportsdispo:
+                    aeroportsdisponames.append(aeroport.nom)
+
+                aeroportsfind = findairports(aeroport_depart,aeroport_arrivee,aeroportsdisponames)
+
+                if aeroportsfind[0][1] < 10: # on crée l'aeroport si le score est trop bas
+                    Aeroports.objects.create(nom=aeroport_depart, pays="Default")
+                if aeroportsfind[1][1] < 10:
+                    Aeroports.objects.create(nom=aeroport_arrivee, pays="Default")
+
+                aeroport_depart = Aeroports.objects.get(nom=aeroportsfind[0][0])
+                aeroport_arrivee = Aeroports.objects.get(nom=aeroportsfind[1][0])
+
+
+
+                # Ajouter le vol à la base de données
+                Vols.objects.create(
+                    avion=avion,
+                    pilote=pilote,
+                    aeroport_depart=aeroport_depart,
+                    date_heure_depart=date_heure_depart,
+                    aeroport_arrivee=aeroport_arrivee,
+                    date_heure_arrivee=date_heure_arrivee,
+                )
+            arrange()
+            return render(request, 'index.html')
+    else:
+        form = UploadCSVForm()
+    return render(request, 'upload_csv.html', {'form': form})

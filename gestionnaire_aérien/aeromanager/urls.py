@@ -34,5 +34,7 @@ urlpatterns = [
     path('delete_type_avion/<int:id>', views.delete_type_avion, name='delete_type_avion'),
     path('delete_vol/<int:id>', views.delete_vol, name='delete_vol'),
 
+    path('upload_csv', views.upload_csv, name='upload_csv'),
+
     #static("type_avion_images", document_root=settings.MEDIA_ROOT)
 ]

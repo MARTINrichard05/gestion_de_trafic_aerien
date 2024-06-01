@@ -6,6 +6,9 @@ class AeroportsForm(forms.ModelForm):
         model = Aeroports
         fields = ['nom', 'pays']
 
+class UploadCSVForm(forms.Form):
+    csv_file = forms.FileField()
+
 class VolsForm(forms.ModelForm):
     class Meta:
         model = Vols
@@ -23,7 +26,7 @@ class AvionsForm(forms.ModelForm):
 class CompagniesForm(forms.ModelForm):
     class Meta:
         model = Compagnies
-        fields = ['nom', 'pays_rattachement']
+        fields = ['nom','description', 'pays_rattachement']
 
 class PistesForm(forms.ModelForm):
     class Meta:

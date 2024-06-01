@@ -8,7 +8,7 @@
         {% for aeroport in aeroports %}
             <p>
                 <a href="{% url 'aeroport_detail' aeroport.id %}">{{ aeroport.nom }}</a>
-                <a href="{% url 'edit_aeroport' aeroport.id %}">Edit</a>
+                <a href="{% url 'edit_aeroport' aeroport.id %}"><button>Edit</button> </a>
                 <a href="{% url 'delete_aeroport' aeroport.id %}"><button>Delete</button></a>
             </p>
         {% endfor %}
@@ -40,7 +40,7 @@
         <h2>Pistes <a href="{% url 'add_piste' %}"><button>Add</button></a></h2>
         {% for piste in pistes %}
             <p>
-                <a href="{% url 'piste_detail' piste.id %}">{{ piste.numero }}</a>
+                <a href="{% url 'piste_detail' piste.id %}">{{ piste }}</a>
                 <a href="{% url 'edit_piste' piste.id %}"><button>Edit</button></a>
                 <a href="{% url 'delete_piste' piste.id %}"><button>Delete</button></a>
             </p>
@@ -60,6 +60,7 @@
 
     <div class="box">
         <h2>Vols <a href="{% url 'add_vol' %}"><button>Add</button></a></h2>
+        <a href="{% url 'upload_csv' %}" class="btn btn-primary"><button>Upload CSV</button></a>
         {% for vol in vols %}
             <p>
                 <a href="{% url 'vol_detail' vol.id %}">{{ vol }}</a>
