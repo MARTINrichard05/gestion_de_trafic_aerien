@@ -7,6 +7,6 @@
     {% if type_avion.image %}
         <img class="rounded-image" src="{{ type_avion.image.url }}" alt="{{ type_avion.marque }} {{ type_avion.modele }}">
     {% endif %}
-
+<a href="{% url 'edit_type_avion' type_avion.id %}"><button>Edit</button></a>
 <a href="{% url 'index' %}"><button>Retour à l'index</button></a>
 {% endblock %}

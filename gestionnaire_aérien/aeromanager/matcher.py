@@ -56,3 +56,6 @@ def findairports(depart,arrive, aeroportsdisponames):
     arrive = find_best_match(arrive, aeroportsdisponames)
     return [depart, arrive]
 
+def findavionsmodels(avion, avionsdisponames):
+    return find_best_match(avion, avionsdisponames)
+

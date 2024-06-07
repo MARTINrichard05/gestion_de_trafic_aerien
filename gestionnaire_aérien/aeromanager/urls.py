@@ -36,5 +36,7 @@ urlpatterns = [
 
     path('upload_csv', views.upload_csv, name='upload_csv'),
 
+    path('vols_par_aeroport_et_periode_pdf/', views.vols_par_aeroport_et_periode_pdf, name='vols_par_aeroport_et_periode_pdf'),
+
     #static("type_avion_images", document_root=settings.MEDIA_ROOT)
 ]

@@ -1,6 +1,11 @@
 from django import forms
 from .models import Aeroports , Avions , Compagnies , Pistes , TypesAvions, Vols
 
+class GeneratePdfForm(forms.Form):
+    aeroport = forms.ModelChoiceField(queryset=Aeroports.objects.all(), required=False)
+    date_debut = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    date_fin = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    all_aeroports = forms.BooleanField(required=False)
 class AeroportsForm(forms.ModelForm):
     class Meta:
         model = Aeroports

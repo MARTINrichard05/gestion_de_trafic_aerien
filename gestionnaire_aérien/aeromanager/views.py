@@ -1,7 +1,6 @@
 from django.shortcuts import render ,get_object_or_404, redirect
 from .models import Aeroports, Avions, Compagnies, Pistes, TypesAvions, Vols
-from .forms import AeroportsForm, AvionsForm, CompagniesForm, PistesForm, TypesAvionsForm, VolsForm
-from .forms import UploadCSVForm
+from .forms import AeroportsForm, AvionsForm, CompagniesForm, PistesForm, TypesAvionsForm, VolsForm, GeneratePdfForm, UploadCSVForm
 import time
 import datetime
 from .matcher import find_best_match, findairports
@@ -9,13 +8,69 @@ from .flightarranger import arrange
 import csv
 from django.http import HttpResponse
 
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from django.http import FileResponse
+
+from reportlab.platypus import SimpleDocTemplate, Table
+from reportlab.lib.pagesizes import letter, landscape
 
 
+def vols_par_aeroport_et_periode_pdf(request):
+    if request.method == 'POST':
+        form = GeneratePdfForm(request.POST)
+        if form.is_valid():
+            aeroport = form.cleaned_data.get('aeroport')
+            date_debut = form.cleaned_data.get('date_debut')
+            date_fin = form.cleaned_data.get('date_fin')
+            all_aeroports = form.cleaned_data.get('all_aeroports')
+
+            # Créer un fichier PDF en mémoire
+            buffer = BytesIO()
+            doc = SimpleDocTemplate(buffer, pagesize=landscape(letter))
+
+            if all_aeroports:
+                # Récupérer tous les vols
+                vols = Vols.objects.filter(date_heure_depart__range=[date_debut, date_fin])
+            else:
+                # Récupérer les vols pour l'aéroport sélectionné
+                vols = Vols.objects.filter(
+                    Q(aeroport_depart=aeroport) | Q(aeroport_arrivee=aeroport),
+                    date_heure_depart__range=[date_debut, date_fin]
+                )
+
+            # Créer le tableau
+            data = [['Avion', 'Type d\'avion', 'Date heure départ', 'Date heure arrivée', 'Aéroport et piste départ', 'Aéroport et piste arrivée']]
+            for vol in vols:
+                if vol.piste_arrivee is not None: # we have to get the name of the piste with the id vol.piste_arrivee
+                    print(vol.piste_arrivee)
+                    pistearrivee = Pistes.objects.get(id=vol.piste_arrivee).numero
+
+                else:
+                    pistearrivee = None
+                if vol.piste_depart is not None:
+                    print(vol.piste_depart)
+                    pistedepart = Pistes.objects.get(id=vol.piste_depart).numero
+                else:
+                    pistedepart = None
+                data.append([vol.avion.nom, vol.avion.modele, vol.date_heure_depart, vol.date_heure_arrivee, f"{vol.aeroport_depart.nom} - {pistedepart}", f"{vol.aeroport_arrivee.nom} - {pistearrivee}"])
+
+            table = Table(data)
+
+            # Ajouter le tableau au PDF
+            elements = []
+            elements.append(table)
+            doc.build(elements)
+
+            # Créer une réponse avec le PDF
+            buffer.seek(0)
+            return FileResponse(buffer, as_attachment=True, filename='vols.pdf')
+    else:
+        form = GeneratePdfForm()
+
+    return render(request, 'aeromanager/index.html', {'form': form})
 
 
-
-def coordinerpiste_vols(pistes, vols):
-    pass
 
 def index(request):
     aeroports = Aeroports.objects.all()
@@ -24,6 +79,8 @@ def index(request):
     pistes = Pistes.objects.all()
     types_avions = TypesAvions.objects.all()
     vols = Vols.objects.all()
+
+    arrange()
 
 
 
@@ -36,14 +93,16 @@ def index(request):
         'vols': vols,
     }
 
-    return render(request, 'index.html', context)
+    return render(request, 'aeromanager/index.html', context)
 
 def aeroport_detail(request, id):
     aeroport = Aeroports.objects.get(id=id)
+    pistes = Pistes.objects.filter(aeroport=id)
     context = {
         'aeroport': aeroport,
+        'pistes': pistes,
     }
-    return render(request, 'aeroport_detail.html', context)
+    return render(request, 'aeroport/aeroport_detail.html', context)
 
 def avion_detail(request, id):
     avion = get_object_or_404(Avions, id=id)
@@ -52,32 +111,32 @@ def avion_detail(request, id):
         'avion': avion,
         'type_avion': type_avions,
     }
-    return render(request, 'avion_detail.html', context)
+    return render(request, 'avion/avion_detail.html', context)
 
 def compagnie_detail(request, id):
     compagnie = Compagnies.objects.get(id=id)
     context = {
         'compagnie': compagnie,
     }
-    return render(request, 'compagnie_detail.html', context)
+    return render(request, 'companie/compagnie_detail.html', context)
 
 def piste_detail(request, id):
     piste = Pistes.objects.get(id=id)
     context = {
         'piste': piste,
     }
-    return render(request, 'piste_detail.html', context)
+    return render(request, 'piste/piste_detail.html', context)
 
 def type_avion_detail(request, id):
     type_avion = TypesAvions.objects.get(id=id)
     context = {
         'type_avion': type_avion,
     }
-    return render(request, 'type_avion_detail.html', context)
+    return render(request, 'type_avion/type_avion_detail.html', context)
 
 def vol_detail(request, id):
     vol = get_object_or_404(Vols, id=id)
-    return render(request, 'detail_vol.html', {'vol': vol})
+    return render(request, 'vol/detail_vol.html', {'vol': vol})
 
 def add_aeroport(request):
     if request.method == 'POST':
@@ -87,7 +146,7 @@ def add_aeroport(request):
             return redirect('aeroport_detail', id=aeroport.id)
     else:
         form = AeroportsForm()
-    return render(request, 'add_aeroport.html', {'form': form})
+    return render(request, 'aeroport/add_aeroport.html', {'form': form})
 
 def add_avion(request):
     if request.method == 'POST':
@@ -97,7 +156,7 @@ def add_avion(request):
             return redirect('avion_detail', id=avion.id)
     else:
         form = AvionsForm()
-    return render(request, 'add_avion.html', {'form': form})
+    return render(request, 'avion/add_avion.html', {'form': form})
 
 def add_compagnie(request):
     if request.method == 'POST':
@@ -107,7 +166,7 @@ def add_compagnie(request):
             return redirect('compagnie_detail', id=compagnie.id)
     else:
         form = CompagniesForm()
-    return render(request, 'add_compagnie.html', {'form': form})
+    return render(request, 'companie/add_compagnie.html', {'form': form})
 
 def add_piste(request):
     if request.method == 'POST':
@@ -118,7 +177,7 @@ def add_piste(request):
             return redirect('piste_detail', id=piste.id)
     else:
         form = PistesForm()
-    return render(request, 'add_piste.html', {'form': form})
+    return render(request, 'piste/add_piste.html', {'form': form})
 
 def add_type_avion(request):
     if request.method == 'POST':
@@ -129,7 +188,7 @@ def add_type_avion(request):
             return redirect('type_avion_detail', id=type_avion.id)
     else:
         form = TypesAvionsForm()
-    return render(request, 'add_type_avion.html', {'form': form})
+    return render(request, 'type_avion/add_type_avion.html', {'form': form})
 
 def add_vol(request):
     if request.method == 'POST':
@@ -140,7 +199,7 @@ def add_vol(request):
             return redirect('vol_detail', id=vol.id)
     else:
         form = VolsForm()
-    return render(request, 'add_vol.html', {'form': form})
+    return render(request, 'vol/add_vol.html', {'form': form})
 
 def edit_aeroport(request, id):
     aeroport = Aeroports.objects.get(id=id)
@@ -151,7 +210,7 @@ def edit_aeroport(request, id):
             return redirect('aeroport_detail', id=aeroport.id)
     else:
         form = AeroportsForm(instance=aeroport)
-    return render(request, 'edit_aeroport.html', {'form': form})
+    return render(request, 'aeroport/edit_aeroport.html', {'form': form})
 
 def edit_avion(request, id):
     avion = Avions.objects.get(id=id)
@@ -162,7 +221,7 @@ def edit_avion(request, id):
             return redirect('avion_detail', id=avion.id)
     else:
         form = AvionsForm(instance=avion)
-    return render(request, 'edit_avion.html', {'form': form})
+    return render(request, 'avion/edit_avion.html', {'form': form})
 
 def edit_compagnie(request, id):
     compagnie = Compagnies.objects.get(id=id)
@@ -173,7 +232,7 @@ def edit_compagnie(request, id):
             return redirect('compagnie_detail', id=compagnie.id)
     else:
         form = CompagniesForm(instance=compagnie)
-    return render(request, 'edit_compagnie.html', {'form': form})
+    return render(request, 'companie/edit_compagnie.html', {'form': form})
 
 def edit_piste(request, id):
     piste = Pistes.objects.get(id=id)
@@ -185,7 +244,7 @@ def edit_piste(request, id):
             return redirect('piste_detail', id=piste.id)
     else:
         form = PistesForm(instance=piste)
-    return render(request, 'edit_piste.html', {'form': form})
+    return render(request, 'piste/edit_piste.html', {'form': form})
 
 def edit_type_avion(request, id):
     type_avion = TypesAvions.objects.get(id=id)
@@ -197,7 +256,7 @@ def edit_type_avion(request, id):
             return redirect('type_avion_detail', id=type_avion.id)
     else:
         form = TypesAvionsForm(instance=type_avion)
-    return render(request, 'edit_type_avion.html', {'form': form})
+    return render(request, 'type_avion/edit_type_avion.html', {'form': form})
 
 def edit_vol(request, id):
     vol = Vols.objects.get(id=id)
@@ -209,9 +268,14 @@ def edit_vol(request, id):
             return redirect('vol_detail', id=vol.id)
     else:
         form = VolsForm(instance=vol)
-    return render(request, 'edit_vol.html', {'form': form})
+    return render(request, 'vol/edit_vol.html', {'form': form})
 
 def delete_aeroport(request, id):
+    # on doit dabord supprimer les pistes
+    pistes = Pistes.objects.filter(aeroport=id)
+    for piste in pistes:
+        piste.delete()
+
     aeroport = Aeroports.objects.get(id=id)
     aeroport.delete()
     return redirect('index')
@@ -295,7 +359,7 @@ def upload_csv(request):
                     date_heure_arrivee=date_heure_arrivee,
                 )
             arrange()
-            return render(request, 'index.html')
+            return render(request, 'aeromanager/index.html')
     else:
         form = UploadCSVForm()
-    return render(request, 'upload_csv.html', {'form': form})
+    return render(request, 'aeromanager/upload_csv.html', {'form': form})

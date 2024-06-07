@@ -72,3 +72,26 @@ a:hover {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #05a8aa;
+}
+
+.btn-delete {
+    background-color: #ff4d4d; /* rouge pas trop flashy */
+}
+
+.btn-delete:hover {
+    background-color: #ff1a1a; /* rouge un peu plus intense au survol */
+}

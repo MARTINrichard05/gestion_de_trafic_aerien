@@ -1,0 +1,5 @@
+<form action="{% url 'vols_par_aeroport_et_periode_pdf' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Générer le PDF</button>
+</form>

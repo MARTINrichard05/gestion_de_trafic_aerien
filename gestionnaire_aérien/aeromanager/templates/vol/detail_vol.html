@@ -8,7 +8,7 @@
     <p>Date Heure Depart: {{ vol.date_heure_depart }}</p>
     <p>Aeroport Arrivee: {{ vol.aeroport_arrivee.nom }}</p>
     <p>Date Heure Arrivee: {{ vol.date_heure_arrivee }}</p>
-
+<a href="{% url 'edit_vol' vol.id %}"><button>Edit</button></a>
 <a href="{% url 'index' %}"><button>Retour à l'index</button></a>
 
 {% endblock %}

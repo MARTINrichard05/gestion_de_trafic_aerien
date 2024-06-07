@@ -9,7 +9,9 @@
             <p>
                 <a href="{% url 'aeroport_detail' aeroport.id %}">{{ aeroport.nom }}</a>
                 <a href="{% url 'edit_aeroport' aeroport.id %}"><button>Edit</button> </a>
-                <a href="{% url 'delete_aeroport' aeroport.id %}"><button>Delete</button></a>
+                {% if not aeroport.vols_aeroport_depart_set.exists and not aeroport.vols_aeroport_arrivee_set.exists %}
+            <td><a href="{% url 'delete_aeroport' aeroport.id %}"><button class="btn-delete">Supprimer</button> </a></td>
+        {% endif %}
             </p>
         {% endfor %}
     </div>
@@ -20,7 +22,7 @@
             <p>
                 <a href="{% url 'avion_detail' avion.id %}">{{ avion.nom }}</a>
                 <a href="{% url 'edit_avion' avion.id %}"><button>Edit</button></a>
-                <a href="{% url 'delete_avion' avion.id %}"><button>Delete</button></a>
+                <a href="{% url 'delete_avion' avion.id %}"><button class="btn-delete">Delete</button></a>
             </p>
         {% endfor %}
     </div>
@@ -31,7 +33,7 @@
             <p>
                 <a href="{% url 'compagnie_detail' compagnie.id %}">{{ compagnie.nom }}</a>
                 <a href="{% url 'edit_compagnie' compagnie.id %}"><button>Edit</button></a>
-                <a href="{% url 'delete_compagnie' compagnie.id %}"><button>Delete</button></a>
+                <a href="{% url 'delete_compagnie' compagnie.id %}"><button class="btn-delete">Delete</button></a>
             </p>
         {% endfor %}
     </div>
@@ -42,7 +44,7 @@
             <p>
                 <a href="{% url 'piste_detail' piste.id %}">{{ piste }}</a>
                 <a href="{% url 'edit_piste' piste.id %}"><button>Edit</button></a>
-                <a href="{% url 'delete_piste' piste.id %}"><button>Delete</button></a>
+                <a href="{% url 'delete_piste' piste.id %}"><button class="btn-delete">Delete</button></a>
             </p>
         {% endfor %}
     </div>
@@ -53,7 +55,9 @@
             <p>
                 <a href="{% url 'type_avion_detail' type_avion.id %}">{{ type_avion.modele }}</a>
                 <a href="{% url 'edit_type_avion' type_avion.id %}"><button>Edit</button></a>
-                <a href="{% url 'delete_type_avion' type_avion.id %}"><button>Delete</button></a>
+                {% if not type_avion.avions_set.exists or type_avion %}
+                    <td><a href="{% url 'delete_type_avion' type_avion.id %}"><button class="btn btn-delete">Supprimer</button></a></td>
+                {% endif %}
             </p>
         {% endfor %}
     </div>
@@ -65,8 +69,16 @@
             <p>
                 <a href="{% url 'vol_detail' vol.id %}">{{ vol }}</a>
                 <a href="{% url 'edit_vol' vol.id %}"><button>Edit</button></a>
-                <a href="{% url 'delete_vol' vol.id %}"><button>Delete</button></a>
+                <a href="{% url 'delete_vol' vol.id %}"><button class="btn-delete">Delete</button></a>
             </p>
         {% endfor %}
+    </div>
+
+<div class="box">
+<form action="{% url 'vols_par_aeroport_et_periode_pdf' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Générer le PDF</button>
+</form>
     </div>
 {% endblock %}

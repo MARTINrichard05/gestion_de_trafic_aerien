@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ aeroport.nom }}</h1>
+
+    <div class="box">
+        <h2>Détails</h2>
+        <p>ID: {{ aeroport.id }}</p>
+        <p>Nom: {{ aeroport.nom }}</p>
+        <p>Localisation: {{ aeroport.pays }}</p>
+        <p>Pistes:</p>
+        <ul>
+            {% for piste in pistes %}
+                <li>{{ piste.numero }}, longueur : {{piste.longueur}} mètres</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <a href="{% url 'edit_aeroport' aeroport.id %}"><button>Edit</button> </a>
+    <a href="{% url 'index' %}"><button>Retour à l'index</button></a>
+{% endblock %}
