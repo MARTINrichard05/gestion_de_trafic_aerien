@@ -3,8 +3,8 @@
 {% block content %}
     <h1>{{ compagnie.nom }}</h1>
     <p>Description: {{ compagnie.description }}</p>
-    <p>Country: {{ compagnie.pays_rattachement }}</p>
+    <p>Pays: {{ compagnie.pays_rattachement }}</p>
     <!-- Add more fields as needed -->
-<a href="{% url 'edit_compagnie' compagnie.id %}"><button>Edit</button></a>
+<a href="{% url 'edit_compagnie' compagnie.id %}"><button>Modifier</button></a>
 <a href="{% url 'index' %}"><button>Retour à l'index</button></a>
 {% endblock %}

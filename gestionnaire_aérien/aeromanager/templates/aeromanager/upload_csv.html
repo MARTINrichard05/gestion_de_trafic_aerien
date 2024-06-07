@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Upload CSV</h1>
+    <h1>Importer un CSV</h1>
+    <p>Le format est le suivant:</p>
+    <p>avion,pilote,aeroport_depart,date_heure_depart,aeroport_arrivee,date_heure_arrivee</p>
+    <p>Exemple:</p>
+    <p>Airbus A320,John Doe,Paris CDG,2022-12-01 14:30:00,New York JFK,2022-12-01 18:00:00</p>
+
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}

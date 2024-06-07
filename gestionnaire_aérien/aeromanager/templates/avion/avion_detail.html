@@ -2,8 +2,8 @@
 
 {% block content %}
     <h1>{{ avion.nom }}</h1>
-    <p>Model: {{ avion.modele }}</p>
-    <p>Company: {{ avion.compagnie.nom }}</p>
-<a href="{% url 'edit_avion' avion.id %}"><button>Edit</button></a>
+    <p>Modele: {{ avion.modele }}</p>
+    <p>Companie: {{ avion.compagnie.nom }}</p>
+<a href="{% url 'edit_avion' avion.id %}"><button>Modifier</button></a>
 <a href="{% url 'index' %}"><button>Retour à l'index</button></a>
 {% endblock %}

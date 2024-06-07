@@ -75,9 +75,9 @@ def vols_par_aeroport_et_periode_pdf(request):
 def index(request):
     aeroports = Aeroports.objects.all()
     avions = Avions.objects.all()
-    compagnies = Compagnies.objects.all()
+    compagnies = Compagnies.objects.exclude(nom="Default")
     pistes = Pistes.objects.all()
-    types_avions = TypesAvions.objects.all()
+    types_avions = TypesAvions.objects.exclude(modele="Default")
     vols = Vols.objects.all()
 
     arrange()

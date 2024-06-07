@@ -4,11 +4,11 @@
     <h1>Index</h1>
 
     <div class="box">
-        <h2>Aeroports <a href="{% url 'add_aeroport' %}"><button>Add</button></a></h2>
+        <h2>Aeroports <a href="{% url 'add_aeroport' %}"><button>Ajouter</button></a></h2>
         {% for aeroport in aeroports %}
             <p>
                 <a href="{% url 'aeroport_detail' aeroport.id %}">{{ aeroport.nom }}</a>
-                <a href="{% url 'edit_aeroport' aeroport.id %}"><button>Edit</button> </a>
+                <a href="{% url 'edit_aeroport' aeroport.id %}"><button>Modifier</button> </a>
                 {% if not aeroport.vols_aeroport_depart_set.exists and not aeroport.vols_aeroport_arrivee_set.exists %}
             <td><a href="{% url 'delete_aeroport' aeroport.id %}"><button class="btn-delete">Supprimer</button> </a></td>
         {% endif %}
@@ -17,45 +17,45 @@
     </div>
 
     <div class="box">
-        <h2>Avions <a href="{% url 'add_avion' %}"><button>Add</button></a></h2>
+        <h2>Avions <a href="{% url 'add_avion' %}"><button>Ajouter</button></a></h2>
         {% for avion in avions %}
             <p>
                 <a href="{% url 'avion_detail' avion.id %}">{{ avion.nom }}</a>
-                <a href="{% url 'edit_avion' avion.id %}"><button>Edit</button></a>
-                <a href="{% url 'delete_avion' avion.id %}"><button class="btn-delete">Delete</button></a>
+                <a href="{% url 'edit_avion' avion.id %}"><button>Modifier</button></a>
+                <a href="{% url 'delete_avion' avion.id %}"><button class="btn-delete">Supprimer</button></a>
             </p>
         {% endfor %}
     </div>
 
     <div class="box">
-        <h2>Compagnies <a href="{% url 'add_compagnie' %}"><button>Add</button></a></h2>
+        <h2>Companies <a href="{% url 'add_compagnie' %}"><button>Ajouter</button></a></h2>
         {% for compagnie in compagnies %}
             <p>
                 <a href="{% url 'compagnie_detail' compagnie.id %}">{{ compagnie.nom }}</a>
-                <a href="{% url 'edit_compagnie' compagnie.id %}"><button>Edit</button></a>
-                <a href="{% url 'delete_compagnie' compagnie.id %}"><button class="btn-delete">Delete</button></a>
+                <a href="{% url 'edit_compagnie' compagnie.id %}"><button>Modifier</button></a>
+                <a href="{% url 'delete_compagnie' compagnie.id %}"><button class="btn-delete">Supprimer</button></a>
             </p>
         {% endfor %}
     </div>
 
     <div class="box">
-        <h2>Pistes <a href="{% url 'add_piste' %}"><button>Add</button></a></h2>
+        <h2>Pistes <a href="{% url 'add_piste' %}"><button>Ajouter</button></a></h2>
         {% for piste in pistes %}
             <p>
                 <a href="{% url 'piste_detail' piste.id %}">{{ piste }}</a>
-                <a href="{% url 'edit_piste' piste.id %}"><button>Edit</button></a>
-                <a href="{% url 'delete_piste' piste.id %}"><button class="btn-delete">Delete</button></a>
+                <a href="{% url 'edit_piste' piste.id %}"><button>Modifier</button></a>
+                <a href="{% url 'delete_piste' piste.id %}"><button class="btn-delete">Supprimer</button></a>
             </p>
         {% endfor %}
     </div>
 
     <div class="box">
-        <h2>Types Avions <a href="{% url 'add_type_avion' %}"><button>Add</button></a></h2>
+        <h2>Types Avions <a href="{% url 'add_type_avion' %}"><button>Ajouter</button></a></h2>
         {% for type_avion in types_avions %}
             <p>
                 <a href="{% url 'type_avion_detail' type_avion.id %}">{{ type_avion.modele }}</a>
-                <a href="{% url 'edit_type_avion' type_avion.id %}"><button>Edit</button></a>
-                {% if not type_avion.avions_set.exists or type_avion %}
+                <a href="{% url 'edit_type_avion' type_avion.id %}"><button>Modifier</button></a>
+                {% if not type_avion.avions_set.exists %}
                     <td><a href="{% url 'delete_type_avion' type_avion.id %}"><button class="btn btn-delete">Supprimer</button></a></td>
                 {% endif %}
             </p>
@@ -63,13 +63,13 @@
     </div>
 
     <div class="box">
-        <h2>Vols <a href="{% url 'add_vol' %}"><button>Add</button></a></h2>
-        <a href="{% url 'upload_csv' %}" class="btn btn-primary"><button>Upload CSV</button></a>
+        <h2>Vols <a href="{% url 'add_vol' %}"><button>Ajouter</button></a></h2>
+        <a href="{% url 'upload_csv' %}" class="btn btn-primary"><button>Importer un csv</button></a>
         {% for vol in vols %}
             <p>
                 <a href="{% url 'vol_detail' vol.id %}">{{ vol }}</a>
-                <a href="{% url 'edit_vol' vol.id %}"><button>Edit</button></a>
-                <a href="{% url 'delete_vol' vol.id %}"><button class="btn-delete">Delete</button></a>
+                <a href="{% url 'edit_vol' vol.id %}"><button>Modifier</button></a>
+                <a href="{% url 'delete_vol' vol.id %}"><button class="btn-delete">Supprimer</button></a>
             </p>
         {% endfor %}
     </div>

@@ -2,10 +2,9 @@
 
 {% block content %}
     <h1>{{ piste.nom }}</h1>
-    <p>Length: {{ piste.longueur }}</p>
-    <p>Width: {{ piste.largeur }}</p>
-    <!-- Add more fields as needed -->
+    <p>Longueur: {{ piste.longueur }}</p>
+    <p>Aeroport: {{ piste.aeroport }}</p>
 
 <a href="{% url 'index' %}"><button>Retour à l'index</button></a>
-<a href="{% url 'edit_piste' piste.id %}"><button>Edit</button></a>
+<a href="{% url 'edit_piste' piste.id %}"><button>Modifier</button></a>
 {% endblock %}
