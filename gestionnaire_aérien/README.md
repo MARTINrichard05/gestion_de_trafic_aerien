@@ -39,3 +39,6 @@ Il contient la fonction `arrange` qui va permettre d'associer les pistes à des 
 # Dépendances
 - Django
 - reportlab
+
+# Installation
+Voir documentation installation individuelle
