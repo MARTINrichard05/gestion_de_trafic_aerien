@@ -78,9 +78,9 @@ def index(request):
     compagnies = Compagnies.objects.exclude(nom="Default")
     pistes = Pistes.objects.all()
     types_avions = TypesAvions.objects.exclude(modele="Default")
-    vols = Vols.objects.all()
+    vols = Vols.objects.all() # on récupère tout les vols
 
-    arrange()
+    arrange() # on associe vols/pistes
 
 
 
@@ -91,7 +91,7 @@ def index(request):
         'pistes': pistes,
         'types_avions': types_avions,
         'vols': vols,
-    }
+    } # on renvoie tout les objets à la page index
 
     return render(request, 'aeromanager/index.html', context)
 
@@ -141,10 +141,10 @@ def vol_detail(request, id):
 def add_aeroport(request):
     if request.method == 'POST':
         form = AeroportsForm(request.POST)
-        if form.is_valid():
+        if form.is_valid(): # si tout est bon, on sauvegarde
             aeroport = form.save()
             return redirect('aeroport_detail', id=aeroport.id)
-    else:
+    else: # sinon on renvoie le formulaire
         form = AeroportsForm()
     return render(request, 'aeroport/add_aeroport.html', {'form': form})
 
@@ -309,23 +309,14 @@ def delete_vol(request, id):
     return redirect('index')
 
 def upload_csv(request):
-    print("Upload CSV")
     if request.method == 'POST':
-        print("POST")
         form = UploadCSVForm(request.POST, request.FILES)
-        print("Form created")
         if form.is_valid():
-            print("Form is valid")
-            print("Files in request:", request.FILES)
-            csv_file = request.FILES['csv_file']
-            print("File received")
+            csv_file = request.FILES['csv_file'] # on récupère le fichier csv
             decoded_file = csv_file.read().decode('utf-8').splitlines()
-            print("File decoded")
-            reader = csv.reader(decoded_file)
-            print("Reader created")
+            reader = csv.reader(decoded_file) # on le lit
             # next(reader)  # Skip the header row
             for row in reader:
-                print("Row")
                 # Extraire les données du vol
                 compagnie_default, _ = Compagnies.objects.get_or_create(nom="Default")
                 modele_default, _ = TypesAvions.objects.get_or_create(marque="Default", modele="Default")
@@ -357,6 +348,7 @@ def upload_csv(request):
 
                 type_avionsdispo = TypesAvions.objects.all()
                 type_avionsdisponames = []
+
                 for type_avion in type_avionsdispo:
                     type_avionsdisponames.append(type_avion.modele)
 
