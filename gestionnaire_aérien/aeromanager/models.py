@@ -20,17 +20,7 @@ class Aeroports(models.Model):
     def __str__(self):
         return self.nom + " (" + self.pays + ")"
 
-    def abreviation(self):
-        mots = self.str(self.nom).split(" ")
-        abrev = ""
-        for mot in mots:
-            abrev += mot[0]
 
-        return abrev.lower()
-
-    def mots_cles(self):
-        mots = self.str(self.nom).lower().split(" ")
-        return mots
 
     def delete(self, *args, **kwargs):
         if self.vols_aeroport_depart_set.exists() or self.vols_aeroport_arrivee_set.exists():
