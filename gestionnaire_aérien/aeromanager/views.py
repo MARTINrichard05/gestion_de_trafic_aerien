@@ -3,7 +3,7 @@ from .models import Aeroports, Avions, Compagnies, Pistes, TypesAvions, Vols
 from .forms import AeroportsForm, AvionsForm, CompagniesForm, PistesForm, TypesAvionsForm, VolsForm, GeneratePdfForm, UploadCSVForm
 import time
 import datetime
-from .matcher import find_best_match, findairports
+from .matcher import find_best_match, findairports, findavionsmodels
 from .flightarranger import arrange
 import csv
 from django.http import HttpResponse
@@ -309,21 +309,27 @@ def delete_vol(request, id):
     return redirect('index')
 
 def upload_csv(request):
+    print("Upload CSV")
     if request.method == 'POST':
+        print("POST")
         form = UploadCSVForm(request.POST, request.FILES)
+        print("Form created")
         if form.is_valid():
+            print("Form is valid")
+            print("Files in request:", request.FILES)
             csv_file = request.FILES['csv_file']
+            print("File received")
             decoded_file = csv_file.read().decode('utf-8').splitlines()
+            print("File decoded")
             reader = csv.reader(decoded_file)
-            next(reader)  # Skip the header row
+            print("Reader created")
+            # next(reader)  # Skip the header row
             for row in reader:
+                print("Row")
                 # Extraire les données du vol
                 compagnie_default, _ = Compagnies.objects.get_or_create(nom="Default")
                 modele_default, _ = TypesAvions.objects.get_or_create(marque="Default", modele="Default")
-                avion, created = Avions.objects.get_or_create(
-                    nom=row[0],
-                    defaults={'compagnie': compagnie_default, 'modele': modele_default}
-                )
+                avion= row[0]
                 pilote = row[1]
                 aeroport_depart = row[2]
                 date_heure_depart = row[3]
@@ -349,6 +355,41 @@ def upload_csv(request):
 
 
 
+                type_avionsdispo = TypesAvions.objects.all()
+                type_avionsdisponames = []
+                for type_avion in type_avionsdispo:
+                    type_avionsdisponames.append(type_avion.modele)
+
+                avionsfind = findavionsmodels(avion,type_avionsdisponames)
+
+                if avionsfind[1] < 10: # on utilise le modèle Default si le score est trop bas
+                    type_avion = "Default"
+                else:
+                    type_avion = avionsfind[0]
+
+
+                # Dans tout les cas on crée un avion, sauf si il existe déjà
+                avionsdispo = Avions.objects.all()
+                avionsdisponames = []
+                for avion in avionsdispo:
+                    avionsdisponames.append(avion.nom)
+                found = False
+                for avione in avionsdisponames:
+                    if avione == avion:
+                        avion = Avions.objects.get(nom=avione)
+                        found = True
+                        break
+                if not found:
+                    avion = Avions.objects.create(nom=avion, modele=TypesAvions.objects.get(modele=type_avion), compagnie=compagnie_default)
+
+
+
+
+
+
+
+
+
                 # Ajouter le vol à la base de données
                 Vols.objects.create(
                     avion=avion,
@@ -358,8 +399,10 @@ def upload_csv(request):
                     aeroport_arrivee=aeroport_arrivee,
                     date_heure_arrivee=date_heure_arrivee,
                 )
+                print("Vol ajouté")
+                print(avion)
             arrange()
-            return render(request, 'aeromanager/index.html')
+            return redirect('index')
     else:
         form = UploadCSVForm()
     return render(request, 'aeromanager/upload_csv.html', {'form': form})

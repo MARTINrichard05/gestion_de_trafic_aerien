@@ -21,3 +21,21 @@ La plupart on une methode `__str__` qui permet de les afficher plus facilement d
 Certaines on aussi une methode `delete` qui permet de supprimer les objets de la base de données en faisant les verification nécessaires avant pour éviter des soucis.   
 
 Pour les vols, piste_depart et piste_arrive sont des integerfields qui contiennent l'id de la piste, je n'ai pas utilisé de foreignkey pour gagner en "souplesse" de gestion.
+
+### `views.py`
+Ce fichier contient toutes les fonctions qui gèrent les requêtes des utilisateurs.   
+J'ai en effet tout mis dans un fichier, c'est surtout por éviter de devoir gérer les importations multiples.
+
+### `matcher.py`
+
+Ce fichier contient des fonctions qui permetent d'avoir une importation des CSV plus propre et plus facile à gérer.
+Il se contente de savoir si (par exemple) "Paris CDG" correspond à "Charles de Gaulle" ou "Los angeles", il va établir un score de correspondance et renvoyer le meilleur.   
+J'ai aussi un équivalent pour les modeles d'avions que l'on importe depuis un CSV.
+
+### `flightarranger.py`
+
+Il contient la fonction `arrange` qui va permettre d'associer les pistes à des vols en fesant attention a ne pas créer de collisions.
+
+# Dépendances
+- Django
+- reportlab

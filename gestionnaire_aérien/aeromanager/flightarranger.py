@@ -1,10 +1,6 @@
 from .models import Aeroports, Avions, Compagnies, Pistes, TypesAvions, Vols
 import datetime
 
-
-
-
-
 def arrange():
     # Get all the flights
     vols = Vols.objects.all()
@@ -17,7 +13,7 @@ def arrange():
     for piste in pistes:
         total_pistes[piste.id] = []
 
-    # asingn the flights to the pistes, by taking in count the min length of the piste
+    # assingn the flights to the pistes, by taking in count the min length of the piste
 
     for vol in vols:
         min_lenght = vol.avion.modele.longueur_piste_necessaire
