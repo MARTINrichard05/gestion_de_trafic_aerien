@@ -391,8 +391,6 @@ def upload_csv(request):
                     aeroport_arrivee=aeroport_arrivee,
                     date_heure_arrivee=date_heure_arrivee,
                 )
-                print("Vol ajouté")
-                print(avion)
             arrange()
             return redirect('index')
     else:

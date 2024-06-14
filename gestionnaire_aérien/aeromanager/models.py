@@ -14,7 +14,7 @@ class Aeroports(models.Model):
     pays = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'aeroports'
 
     def __str__(self):
@@ -34,7 +34,7 @@ class Avions(models.Model):
     modele = models.ForeignKey('TypesAvions', models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'avions'
 
     def __str__(self):
@@ -47,7 +47,7 @@ class Compagnies(models.Model):
     pays_rattachement = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'compagnies'
 
     def __str__(self):
@@ -75,7 +75,7 @@ class TypesAvions(models.Model):
     longueur_piste_necessaire = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'types_avions'
 
     def __str__(self):
